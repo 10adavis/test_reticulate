@@ -1,0 +1,34 @@
+---
+title: "1_Gather-and-Tidy-Data"
+author:
+- Andrew Davis, PhD, Unilever Human Biology
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  rmarkdown::html_document:
+    toc: TRUE
+---
+
+# Install/Load dependencies
+```{r, echo=TRUE, message=FALSE, Loading_Dependencies_1}
+# Install cran packages
+list.of.packages <- c("dplyr","data.table","tidyverse")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+# Install Bioconductor packages
+#bioc.packages <- c("")
+new.bioc.packages <- bioc.packages[!(bioc.packages %in% installed.packages()[,"Package"])]
+if(length(new.bioc.packages)) BiocManager::install(new.bioc.packages)
+
+# Load dependencies:
+library(dplyr)
+library(data.table)
+library(tidyverse)
+```
+
+# Read-in data:
+
+```{r}
+
+```
+
