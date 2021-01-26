@@ -15,6 +15,10 @@ This is a tutorial to practice running reticulate in RStudio.
 Based on a tutorial from: https://docs.rstudio.com/tutorials/user/using-python-with-rstudio-and-reticulate/
 
 
+```{bash}
+source .venv/bin/activate
+```
+
 # Metadata:
 
 

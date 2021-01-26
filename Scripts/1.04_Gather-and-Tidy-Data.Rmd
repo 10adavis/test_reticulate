@@ -11,26 +11,77 @@ output:
 # Install/Load dependencies
 ```{r, echo=TRUE, message=FALSE, Loading_Dependencies_1}
 # Install cran packages
-list.of.packages <- c("dplyr","data.table","tidyverse","reticulate")
+list.of.packages <- c("dplyr","data.table","tidyverse","reticulate","Seurat","ggplot2",'pheatmap')
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
 # Install Bioconductor packages
-#bioc.packages <- c("")
-# new.bioc.packages <- bioc.packages[!(bioc.packages %in% installed.packages()[,"Package"])]
-# if(length(new.bioc.packages)) BiocManager::install(new.bioc.packages)
+bioc.packages <- c("SingleCellExperiment","scater","scran")
+new.bioc.packages <- bioc.packages[!(bioc.packages %in% installed.packages()[,"Package"])]
+if(length(new.bioc.packages)) BiocManager::install(new.bioc.packages)
 
 # Load dependencies:
 library(dplyr)
 library(data.table)
 library(tidyverse)
 library(reticulate)
-
+library(SingleCellExperiment)
+library(scater)
+library(scran)
+library(Seurat)
+library(ggplot2)
+library(pheatmap)
 ```
 
 # Read-in data:
 
 ```{r}
+options(future.globals.maxSize = 32000 * 1024^2)
+```
+
+# Read-in data analyzed Sole-Boldo data
+```{r}
+Sole_Seurat<-readRDS("/home/andrew/Documents/Github_Repositories/scRNAseq-Sole-Boldo_2020-Seurat-integrated/Results/Sole-Boldo_normalized_clustered.RData")
+```
+
+
+```{r}
+normalized_counts<-as.data.frame(GetAssayData(object=Sole_Seurat, slot="data",assay="RNA"))
+```
+
+
+```{r}
+normalized_counts$Gene<- row.names(normalized_counts)
+normalized_counts<-normalized_counts[,c(15155,1:15154)]
+write.table(normalized_counts,"../Results/Sole_Boldo_Norm_Counts.txt",sep="\t",quote=FALSE,row.names=FALSE)
+```
+
+```{r}
+metadata<-Sole_Seurat@meta.data
+metadata$cell<- row.names(metadata)
+metadata<-metadata[,c(24,19)]
+write.table(metadata,"../Results/Sole_Boldo_metadata.txt",sep="\t",quote=FALSE,row.names=FALSE)
+```
+
+```{bash}
+source .venv/bin/activate
+```
+
+```{bash}
+pip install cellphonedb
+
+python --version
 
 ```
+
+```{bash}
+cellphonedb method statistical_analysis Results/Sole_Boldo_metadata.txt Results/Sole_Boldo_Norm_Counts.txt --output-path cellphoneDB_out/ --counts-data=gene_name
+
+cellphonedb plot dot_plot --means-path cellphoneDB_out/means.txt --pvalues-path cellphoneDB_out/pvalues.txt --output-path cellphoneDB_out/
+```
+
+```{bash}
+cellphonedb plot heatmap_plot Sole_Boldo_metadata.txt --output-path ../Results/
+```
+
 
